@@ -10,7 +10,7 @@ local timers = {}
 local NUM_TIMERS = 9
 local startTime = nil
 local user = {}
-local themesongFilename = '1.mp3'
+local themesongFilename = 'themes/retro_1.mp3'
 local gameOverFilename = 'bits_game_over.mp3'
 local gameWinFilename = 'bits_game_win.mp3'
 
@@ -117,7 +117,7 @@ function GR(row) -- GET ROW OF N BITS
 end
 
 -- AVATAR DRAWING METHODS
-function A(x1,y1,x2,y2)
+function A(x1,y1,c,x2,y2)
   if not x2 or not y2 then
     x2,y2 = x1+1,y1+1
   end
@@ -128,7 +128,7 @@ function A(x1,y1,x2,y2)
   xA,xB = (x1-1)*(w/N),(x2-1)*(w/N)
   yA,yB = (y1-1)*(h/N),(y2-1)*(h/N)
   if user.avatarImage then
-    AVATAR(xA,yA,xB,yB,aspect)
+    AVATAR(xA,yA,xB,yB,aspect,c)
   else
     RB(x1,y1,x2,y2,1)
   end
@@ -157,6 +157,7 @@ end
 -- TODO: pressing the 'c' key at any time shows a controls overlay? or 'h' for help?
 
 local Imgs = {}
+local showingManual = false
 
 local soundFilenames = {}
 local imgFilenames = {}
@@ -213,13 +214,11 @@ end
 -- TODO: get and load all sounds (use pre-fetch API), load em into mem
 -- TODO: get all images, pre-fetch 'em by default, load em into mem
 function love.load()
-  -- TODO: should instead get main entry point from .castle and preprocess 
-  -- starting there. also need to pre-process recursively
-  preprocess('main.lua')
-
   love.keyboard.setKeyRepeat(true)
 
   SRAND()
+
+  Imgs['manual'] = love.graphics.newImage('manual.png')
 
   network.async(function()
     user.name = castle.user.getMe().username
@@ -314,14 +313,18 @@ function love.mousereleased(x, y, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  if     key == 'space' then s,S = 1,1
-  elseif key == 'up'    then u,U = 1,1
-  elseif key == 'down'  then d,D = 1,1
-  elseif key == 'left'  then l,L = 1,1
-  elseif key == 'right' then r,R = 1,1
+  if key == 'm' then
+    showingManual = not showingManual
+  else
+    if     key == 'space' then s,S = 1,1
+    elseif key == 'up'    then u,U = 1,1
+    elseif key == 'down'  then d,D = 1,1
+    elseif key == 'left'  then l,L = 1,1
+    elseif key == 'right' then r,R = 1,1
+    end
+    keysJustPressed[key] = true
+    keysHeld[key] = true
   end
-  keysJustPressed[key] = true
-  keysHeld[key] = true
 
   if key == 'p' and (GO or GW) then
     POST("Just screenshottin this bits game...")
@@ -415,6 +418,9 @@ function love.draw()
   else
     drawFunc()
   end
+  if showingManual then
+    -- TODO: show manual (see lib.lua for example)
+  end
 end
 
 -- TODO: make this do the thing. make something similarly architected to moonshine,
@@ -462,7 +468,7 @@ local function setColor(col, alpha)
 
   if col == nil then
     -- TODO: throw some error/warning
-    col = {0,0,0}
+    col = {1,1,1}
   end
 
   if colors[col] then
@@ -516,13 +522,18 @@ end
 -- and this function needs to lookup that love2d image in a table
 -- and then draw that image according to the below params
 -- TODO: define + use types for 'aspect' param
-local function IMG(filename, x1, y1, x2, y2, aspect)
+local function IMG(filename, x1, y1, x2, y2, aspect, color)
   aspect = aspect or 'aspect_fill'
 
   col_r,col_g,col_b,col_a = love.graphics.getColor()
 
   if Imgs[filename] then
-    love.graphics.setColor(1,1,1,1)
+
+    if color == nil then
+      color = {1,1,1}
+    end
+    
+    setColor(color)
 
     local actualWidth = Imgs[filename]:getWidth()
     local actualHeight = Imgs[filename]:getHeight()
@@ -559,10 +570,11 @@ local function IMG(filename, x1, y1, x2, y2, aspect)
   love.graphics.setColor({col_r,col_g,col_b,col_a})
 end
 
-function AVATAR(x1, y1, x2, y2, aspect)
+function AVATAR(x1, y1, x2, y2, aspect, color)
   aspect = aspect or 'aspect_fill'
+  setColor(color)
   if user.avatarImage then
-    IMG('avatar', x1, y1, x2, y2, aspect)
+    IMG('avatar', x1, y1, x2, y2, aspect, color)
   else
     -- TODO: throw warning?
   end
