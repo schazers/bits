@@ -10,7 +10,7 @@ local timers = {}
 local NUM_TIMERS = 9
 local startTime = nil
 local user = {}
-local themesongFilename = 'themes/retro_1.mp3'
+local themesongFilename = '1.mp3'
 local gameOverFilename = 'bits_game_over.mp3'
 local gameWinFilename = 'bits_game_win.mp3'
 
