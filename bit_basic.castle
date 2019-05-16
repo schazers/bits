@@ -2,6 +2,6 @@
 main: main.lua
 title: Bits Basic Example
 owner: schazers
-primaryColor: 0000ff
+primaryColor: 000064
 description: B A S I C
 dimensions: 512x512
