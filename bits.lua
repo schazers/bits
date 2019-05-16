@@ -202,7 +202,7 @@ end
 local function loadAssets()
   for k, v in pairs(soundFilenames) do
     print(v)
-    Sounds[v] = Sound:new(v, 3) -- TODO: dynamically size the sound channel amount
+    Sounds[v] = Sound:new(v, 8) -- TODO: dynamically size the sound channel amount
   end
 
   for k, v in pairs(imgFilenames) do
@@ -322,6 +322,10 @@ function love.keypressed(key, scancode, isrepeat)
   end
   keysJustPressed[key] = true
   keysHeld[key] = true
+
+  for i=1,9 do
+    if key == tostring(i) then FX(i) end
+  end
 
   if key == 'p' and (GO or GW) then
     POST("Just screenshottin this bits game...")
