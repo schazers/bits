@@ -261,7 +261,7 @@ function love.load()
   loadAssets()
 
   THEME('retro')
-  if TS >= 1 then
+  if TS ~= nil and TS >= 1 then
     PLAYSND(themesongFilename,1.0,true)
   end
 
