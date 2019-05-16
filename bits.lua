@@ -119,7 +119,12 @@ end
 -- AVATAR DRAWING METHODS
 function A(x1,y1,c,x2,y2)
   if not x2 or not y2 then
-    x2,y2 = x1+1,y1+1
+    if not user.avatarImage then
+      B(x1,y1,1)
+      return
+    else
+      x2,y2 = x1+1,y1+1
+    end
   end
   x1 = FLR(CLAMP(1,x1,N))
   y1 = FLR(CLAMP(1,y1,N))
@@ -201,7 +206,6 @@ end
 
 local function loadAssets()
   for k, v in pairs(soundFilenames) do
-    print(v)
     Sounds[v] = Sound:new(v, 8) -- TODO: dynamically size the sound channel amount
   end
 
