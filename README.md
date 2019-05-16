@@ -1,6 +1,6 @@
 # bits
 
-bits.lua is a strongly opinionated (Castle)[https://www.castle.games] library intended for games of small character counts. For example, it may be used to make a game’s code fit within a tweet or two. (280 or 560 characters)
+bits.lua is a strongly opinionated [Castle](https://www.castle.games) library intended for games of small character counts. For example, it may be used to make a game’s code fit within a tweet or two. (280 or 560 characters)
 
 The documenation for the library is currently here in a Google Doc:
 
