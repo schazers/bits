@@ -245,7 +245,7 @@ function love.load()
     end
   end
 
-  if TS ~= nil then
+  if TS ~= nil and TS >= 1 then
     themesongFilename = TS..".mp3"
     -- TODO: error handling on bad inputs to TS
   end
@@ -261,7 +261,9 @@ function love.load()
   loadAssets()
 
   THEME('retro')
-  PLAYSND(themesongFilename,1.0,true)
+  if TS >= 1 then
+    PLAYSND(themesongFilename,1.0,true)
+  end
 
   if _L ~=nil then _L() end
 end
