@@ -1,6 +1,26 @@
 require 'sounds'
 local moonshine = require 'moonshine'
 
+if CASTLE_PREFETCH then
+  CASTLE_PREFETCH({
+    'main.lua',
+    '1.mp3',
+    '2.mp3',
+    '3.mp3',
+    '4.mp3',
+    '5.mp3',
+    'fx_1.mp3',
+    'fx_2.mp3',
+    'fx_3.mp3',
+    'fx_4.mp3',
+    'fx_5.mp3',
+    'fx_6.mp3',
+    'fx_7.mp3',
+    'fx_8.mp3',
+    'fx_9.mp3',
+  })
+ end
+
 -- Number of bits on both axes. Can be set from tweet code.
 N = 31
 X,Y = 1,1
