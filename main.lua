@@ -1,5 +1,5 @@
 require 'bits'
-N,x,y=9,5,5
+TS,N,x,y=5,9,5,5
 function _D()
   BG(3)
   B(x,y,7)
