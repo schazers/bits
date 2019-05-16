@@ -14,7 +14,7 @@ We're all just little squares at heart.
 
 Play [Submarine Adventure](https://castle.games/@schazers/submarine-adventure)
 
-Below this sentence lies the code for this game:
+Here's all of the code for this game:
 
 ```lua
 require 'bits'
