@@ -11,8 +11,8 @@ Sorry, will add markdown in GitHub later :)
 We're all just little squares at heart.
 
 ![Screenshot](submarine_adventure.png)
-
-Below this sentence lies the code for the above game, which you may play here: [Submarine Adventure](https://castle.games/@schazers/submarine-adventure)
+Play [Submarine Adventure](https://castle.games/@schazers/submarine-adventure)
+Below this sentence lies the code for this game:
 
 ```lua
 require 'bits'
