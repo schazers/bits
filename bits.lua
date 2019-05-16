@@ -14,18 +14,19 @@ local themesongFilename = 'themes/retro_1.mp3'
 local gameOverFilename = 'bits_game_over.mp3'
 local gameWinFilename = 'bits_game_win.mp3'
 
+local cd=1.3
 local colors = {
   {1, 1, 1},              -- 1 = white
   {0, 0, 0},              -- 2 = black
   {0.1, 0.1, 0.1},        -- 3 = dark
-  {0.5/2, 0.5/2, 0.5/2},  -- 4 = gray
-  {1.0/2, 0.0, 1.0/2},    -- 5 = purple
-  {0, 0, 1/2},            -- 6 = blue
-  {0.0, 1.0/2, 1.0/2},    -- 7 = cyan
-  {0, 1/2, 0},            -- 8 = green
-  {1.0/2, 1.0/2, 0.0},    -- 9 = yellow
-  {0.9/2, 0.3/2, 0},      -- 10 = orange
-  {1/2, 0, 0},            -- 11 = red
+  {0.5/cd, 0.5/cd, 0.5/cd},  -- 4 = gray
+  {1.0/cd, 0.0, 1.0/cd},    -- 5 = purple
+  {0.1, 0.1, 1},            -- 6 = blue
+  {0.0, 1.0/cd, 1.0/cd},    -- 7 = cyan
+  {0, 1/cd, 0},            -- 8 = green
+  {1.0/cd, 1.0/cd, 0.0},    -- 9 = yellow
+  {0.9/cd, 0.3/cd, 0},      -- 10 = orange
+  {1/cd, 0, 0},            -- 11 = red
 }
 
 -- KEY PRESSES
@@ -102,7 +103,7 @@ function V(x,y1,y2,col) for i=y1,y2 do BIT(x,i,col) end end -- [V]ERTICAL LINE O
 function RB(x1,y1,x2,y2,col) for i=y1,y2 do H(i,x1,x2,col) end end -- [R]ECT OF [B]ITS
 function BG(col) RB(0,0,N,N,col) end -- DRAW SCREEN's [B]ACK[G]ROUND COLOR
 
-function G(xBit,yBit) return bits[xBit][yBit] end -- GET BIT - Get color of bit. Returns 0 if no bit.
+function G(xBit,yBit) return bits[FLR(xBit)][FLR(yBit)] end -- GET BIT - Get color of bit. Returns 0 if no bit.
 function GC(col) -- GET COL OF N BITS
   return bits[col]
 end 
@@ -118,24 +119,26 @@ end
 
 -- AVATAR DRAWING METHODS
 function A(x1,y1,c,x2,y2)
-  if not x2 or not y2 then
+  if x2 == nil or y2 == nil then
     if not user.avatarImage then
       B(x1,y1,1)
       return
     else
-      x2,y2 = x1+1,y1+1
+      x2,y2 = x1,y1
     end
   end
   x1 = FLR(CLAMP(1,x1,N))
   y1 = FLR(CLAMP(1,y1,N))
+  x2 = FLR(CLAMP(1,x2,N))
+  y2 = FLR(CLAMP(1,y2,N))
   local w = love.graphics.getWidth()
   local h = love.graphics.getHeight()
-  xA,xB = (x1-1)*(w/N),(x2-1)*(w/N)
-  yA,yB = (y1-1)*(h/N),(y2-1)*(h/N)
+  xA,xB = (x1-1)*(w/N),(x2)*(w/N)
+  yA,yB = (y1-1)*(h/N),(y2)*(h/N)
   if user.avatarImage then
     AVATAR(xA,yA,xB,yB,aspect,c)
   else
-    RB(x1,y1,x2,y2,1)
+    RB(x1,y1,x2-1,y2-1,1)
   end
   bits[x1][y1] = -1
 end
@@ -217,7 +220,7 @@ end
 -- TODO: get and load all sounds (use pre-fetch API), load em into mem
 -- TODO: get all images, pre-fetch 'em by default, load em into mem
 function love.load()
-  love.keyboard.setKeyRepeat(true)
+  love.keyboard.setKeyRepeat(false)
 
   SRAND()
 
@@ -284,6 +287,11 @@ function love.update(dt)
     Y = CLAMP(1, Y, N)
     x = CLAMP(1, x, N)
     y = CLAMP(1, y, N)
+
+    if l == 1 then X = FLR(X) end
+    if r == 1 then X = CEIL(X) end
+    if u == 1 then Y = FLR(Y) end
+    if d == 1 then Y = CEIL(Y) end
   end
 
   -- nil any input
