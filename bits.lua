@@ -136,7 +136,7 @@ function A(x1,y1,c,x2,y2)
 end
 
 -- SOUND
-function S(fname,shouldLoop) 
+function FX(fname,shouldLoop)
   if shouldLoop == nil then
     shouldLoop = false
   elseif shouldLoop == 1 then
@@ -157,7 +157,6 @@ end
 -- TODO: pressing the 'c' key at any time shows a controls overlay? or 'h' for help?
 
 local Imgs = {}
-local showingManual = false
 
 local soundFilenames = {}
 local imgFilenames = {}
@@ -218,8 +217,6 @@ function love.load()
 
   SRAND()
 
-  Imgs['manual'] = love.graphics.newImage('manual.png')
-
   network.async(function()
     user.name = castle.user.getMe().username
     user.avatarImage = love.graphics.newImage(castle.user.getMe().photoUrl)
@@ -244,6 +241,10 @@ function love.load()
   if TS ~= nil then
     themesongFilename = TS..".mp3"
     -- TODO: error handling on bad inputs to TS
+  end
+
+  for i=1,9 do
+    table.insert(soundFilenames, 'fx_'..i..'.mp3')
   end
 
   table.insert(soundFilenames, themesongFilename)
@@ -313,18 +314,14 @@ function love.mousereleased(x, y, button, istouch, presses)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  if key == 'm' then
-    showingManual = not showingManual
-  else
-    if     key == 'space' then s,S = 1,1
-    elseif key == 'up'    then u,U = 1,1
-    elseif key == 'down'  then d,D = 1,1
-    elseif key == 'left'  then l,L = 1,1
-    elseif key == 'right' then r,R = 1,1
-    end
-    keysJustPressed[key] = true
-    keysHeld[key] = true
+  if     key == 'space' then s,S = 1,1
+  elseif key == 'up'    then u,U = 1,1
+  elseif key == 'down'  then d,D = 1,1
+  elseif key == 'left'  then l,L = 1,1
+  elseif key == 'right' then r,R = 1,1
   end
+  keysJustPressed[key] = true
+  keysHeld[key] = true
 
   if key == 'p' and (GO or GW) then
     POST("Just screenshottin this bits game...")
@@ -399,7 +396,6 @@ end
 local filter_effect = nil
 
 function love.draw()
-
   local drawFunc = (function()
     if _D ~=nil then _D() end
     if GO or GW then
@@ -412,14 +408,10 @@ function love.draw()
     end
   end)
 
-  --w,h,hw,hh=W(),H(),HW(),HH()
   if filter_effect then
     filter_effect(drawFunc)
   else
     drawFunc()
-  end
-  if showingManual then
-    -- TODO: show manual (see lib.lua for example)
   end
 end
 
@@ -596,6 +588,9 @@ end
 -- TODO: make volume+looping optional params
 -- TODO: allow an onFinishFunc per sound
 function PLAYSND(filename, volume, shouldLoop)
+  if type(filename) == 'number' then
+    filename = 'fx_'..tostring(filename)..'.mp3'
+  end
   if volume == nil then
     volume = 1.0
   end

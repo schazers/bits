@@ -6,4 +6,5 @@ function _D()
   A(x,y)
 end
 function _U(dt)
+  FX(s*4)
 end
